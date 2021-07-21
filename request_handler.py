@@ -2,10 +2,10 @@ import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from entries import (
     get_all_entries,
-    get_single_entry
+    get_single_entry,
     # get_entries_by_mood,
     # create_entry,
-    # delete_entry,
+    delete_entry
     # update_entry,
 )
 from moods import (
@@ -103,6 +103,19 @@ class HandleRequests(BaseHTTPRequestHandler):
 
     # Here's a method on the class that overrides the parent's method.
     # It handles any POST request.
+
+    def do_DELETE(self):
+        # Set a 204 response code
+        self._set_headers(204)
+
+        # Parse the URL
+        (resource, id) = self.parse_url(self.path)
+
+        # Delete a single entry from the list
+        if resource == "entries":
+            delete_entry(id)
+
+        self.wfile.write("".encode())
 
 
 # This function is not inside the class. It is the starting
