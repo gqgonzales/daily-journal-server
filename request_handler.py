@@ -9,7 +9,8 @@ from entries import (
     # update_entry,
 )
 from moods import (
-    get_all_moods
+    get_all_moods,
+    get_single_mood
 )
 
 # Here's a class. It inherits from another class.
@@ -98,6 +99,12 @@ class HandleRequests(BaseHTTPRequestHandler):
                     response = f"{get_single_entry(id)}"
                 else:
                     response = f"{get_all_entries()}"
+
+            if resource == "moods":
+                if id is not None:
+                    response = f"{get_single_mood(id)}"
+                else:
+                    response = f"{get_all_moods()}"
 
         self.wfile.write(response.encode())
 
