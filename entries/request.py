@@ -121,3 +121,31 @@ def delete_entry(id):
         DELETE FROM Entries
         WHERE id = ?
         """, (id, ))
+
+
+def get_entries_from_search(searchTerm):
+    with sqlite3.connect("./dailyjournal.db") as conn:
+
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+        db_cursor.execute(f"""
+        SELECT e.id,
+            e.entry_date,
+            e.concept,
+            e.body,
+            e.mood_id,
+            m.label mood_label
+        FROM Entries e
+            JOIN Moods m ON m.id = e.mood_id
+        WHERE concept LIKE "%{searchTerm}%"
+            OR body LIKE "%{searchTerm}%";
+        """)
+        entries = []
+        dataset = db_cursor.fetchall()
+
+        for row in dataset:
+            entry = Entry(row['id'], row['entry_date'], row['concept'],
+                          row['body'], row['mood_id'])
+            entries.append(entry.__dict__)
+
+    return json.dumps(entries)

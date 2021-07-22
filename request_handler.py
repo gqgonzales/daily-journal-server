@@ -3,6 +3,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from entries import (
     get_all_entries,
     get_single_entry,
+    get_entries_from_search,
     # get_entries_by_mood,
     # create_entry,
     delete_entry
@@ -105,6 +106,11 @@ class HandleRequests(BaseHTTPRequestHandler):
                     response = f"{get_single_mood(id)}"
                 else:
                     response = f"{get_all_moods()}"
+
+        elif len(parsed) == 3:
+            (resource, key, value) = parsed
+            if key == "q" and resource == "entries":
+                response = f"{get_entries_from_search(value)}"
 
         self.wfile.write(response.encode())
 
