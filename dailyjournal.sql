@@ -69,5 +69,4 @@ VALUES (
 SELECT *
 FROM Entries e
     JOIN Moods m ON m.id = e.mood_id;
-
 DROP TABLE IF EXISTS `Entries`;

@@ -4,4 +4,4 @@ class Mood():
     # needs as the first parameter.
     def __init__(self, id, label):
         self.id = id
-        self.labe = label
+        self.label = label

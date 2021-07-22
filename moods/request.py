@@ -1,6 +1,6 @@
 import sqlite3
 import json
-from models import mood, Mood
+from models import Mood
 
 
 def get_all_moods():
@@ -45,3 +45,33 @@ def get_all_moods():
 
             # Use `json` package to properly serialize list as JSON
         return json.dumps(moods)
+
+
+def get_single_mood(id):
+    with sqlite3.connect("./dailyjournal.db") as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+
+        # Use a ? parameter to inject a variable's value
+        # into the SQL statement.
+        db_cursor.execute(
+            """
+        SELECT
+            m.id,
+            m.label
+        FROM moods m
+        WHERE m.id = ?
+        """,
+            (id,),
+        )
+
+        # Load the single result into memory
+        data = db_cursor.fetchone()
+
+        # Create an mood instance from the current row
+        mood = Mood(
+            data["id"],
+            data["label"]
+        )
+
+    return json.dumps(mood.__dict__)
