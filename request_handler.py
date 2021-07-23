@@ -5,7 +5,7 @@ from entries import (
     get_single_entry,
     get_entries_from_search,
     # get_entries_by_mood,
-    # create_entry,
+    create_entry,
     delete_entry
     # update_entry,
 )
@@ -113,6 +113,27 @@ class HandleRequests(BaseHTTPRequestHandler):
                 response = f"{get_entries_from_search(value)}"
 
         self.wfile.write(response.encode())
+
+    def do_POST(self):
+        """Handles POST requests to the server"""
+        self._set_headers(201)
+        content_len = int(self.headers.get("content-length", 0))
+        post_body = self.rfile.read(content_len)
+
+        # Convert JSON string to a Python dictionary
+        post_body = json.loads(post_body)
+
+        # Parse the URL
+        (resource, id) = self.parse_url(self.path)
+
+        # Initialize new entry
+        new_entry = None
+
+        # Add a new entry to the list.
+        if resource == "entries":
+            new_entry = create_entry(post_body)
+            # Encode the new animal and send in response
+        self.wfile.write(f"{new_entry}".encode())
 
     # Here's a method on the class that overrides the parent's method.
     # It handles any POST request.

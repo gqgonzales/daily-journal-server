@@ -149,3 +149,18 @@ def get_entries_from_search(searchTerm):
             entries.append(entry.__dict__)
 
     return json.dumps(entries)
+
+
+def create_entry(new_entry):
+    with sqlite3.connect("./dailyjournal.db") as conn:
+        db_cursor = conn.cursor()
+        db_cursor.execute("""
+        INSERT INTO Entries
+            ( entry_date, concept, body, mood_id)
+        VALUES
+            ( ?, ?, ?, ?);
+        """, (new_entry['entry_date'], new_entry['concept'], new_entry['body'], new_entry['mood_id']))
+        new_id = db_cursor.lastrowid
+        new_entry['id'] = new_id
+
+    return json.dumps(new_entry)
